@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="xsltforms.xsl"?>
+<?xml-model href="http://www.oxygenxml.com/1999/xhtml/xhtml-xforms.nvdl" schematypens="http://purl.oclc.org/dsdl/nvdl/ns/structure/1.0"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:sparql="http://www.w3.org/2005/sparql-results#" xmlns:xf="http://www.w3.org/2002/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+    <title>LD4P cataloger dashboard</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/basex2/static/bibframx.css" rel="stylesheet" />
+
+    <script src="/basex2/static/clipboard.js-master/dist/clipboard.min.js"></script>
+    <style type="text/css">
+      <![CDATA[
+      xforms-repeat-item {
+      
+        padding: 1%;
+        margin: 1%;
+      
+      }
+      .bold {
+        font-weight: 800;
+      }
+      .ephemeral {
+        margin-left: 10px;
+      }
+      .ital {
+        font-style: italic;
+      }
+      .loading {
+        text-align: center;
+        width: 10%;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .warn {
+        color: red;
+        font-size: larger;
+      }]]>
+    </style>
+    <model id="m" xmlns="http://www.w3.org/2002/xforms">
+      <instance id="state">
+        <data xmlns="">
+          <status loading="false" ready="false">...Loading...</status>
+          <current/>
+        </data>
+      </instance>
+      <instance id="params">
+        <data xmlns="">
+          <netID></netID>
+        </data>
+      </instance>
+      <instance id="sparql">
+        <data xmlns="">
+          <query> </query>
+        </data>
+      </instance>
+      <instance id="response">
+        <data xmlns="">
+          <response/>
+        </data>
+      </instance>
+      <submission id="send-sparql" instance="response" method="get" ref="instance('params')" replace="instance" resource="/basex2/dashboard" targetref="response">
+        <action ev:event="xforms-submit">
+          <refresh/>
+        </action>
+        <xf:setvalue ev:event="xforms-submit-done" ref="instance('state')/status/@loading" value="'false'"/>
+        <action ev:event="xforms-submit-error">
+          <message>
+            <output value="event('error-type')"/>
+            <output value="event('response-reason-phrase')"/>
+            <output value="event('response-body')"/>
+          </message>
+        </action>
+      </submission>
+      <action ev:event="xforms-model-construct-done">
+        <setvalue ref="instance('state')/status/@ready" value="true()"/>
+        <refresh/>
+      </action>
+      <action ev:event="xforms-ready">
+        <setfocus control="netID-input"/>
+      </action>
+
+      <action ev:event="copy-event">
+        <setvalue ref="instance('response')/response//item[@iri = instance('state')/current]/@copied" value="'true'"/>
+        <dispatch delay="1000" name="copy-change" targetid="m"/>
+      </action>
+
+      <action ev:event="copy-change">
+        <setvalue ref="instance('response')/response//item[@iri = instance('state')/current]/@copied" value="'false'"/>
+      </action>
+    </model>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <xf:group ref="instance('state')/status[@ready = 'true']">
+        <hr />
+
+        <h1>LD4P cataloger dashboard</h1>
+        <p>This form is a first attempt at providing automated quality assurance for our cataloging data in Sinopia. During initial reviews of the data, some common issues were identified, mostly focused on Manifestation-level descriptions.</p>
+        <p>When you enter your netID below, a report of any issues found in your descriptions will be returned. To open and edit the descriptions, copy the URI and search for it in Sinopia.</p>
+        <hr />
+        <xf:input id="netID-input" ref="instance('params')/netID">
+          <xf:label>Enter your netID to retrieve your Sinopia cataloging report: </xf:label>
+          <xf:action ev:event="DOMActivate">
+            <xf:setvalue ev:event="DOMActivate" ref="instance('state')/status/@loading" value="true()"/>
+            <xf:refresh/>
+            <xf:send submission="send-sparql"/>
+          </xf:action>
+        </xf:input>
+
+        <xf:submit submission="send-sparql">
+          <xf:label>Submit</xf:label>
+          <xf:setvalue ev:event="DOMActivate" ref="instance('state')/status/@loading" value="true()"/>
+
+        </xf:submit>
+
+        <hr />
+
+
+        <xf:group class="loading" ref="instance('state')/status[@loading = 'true']">
+          <h2>
+            <xf:output value="."/>
+          </h2>
+        </xf:group>
+
+        <xf:group ref="instance('response')/*">
+
+          <xf:group ref="sameAs-check">
+            <h2>Looking for URIs in fields that expect a string</h2>
+            <p class="warn">Please check the <span class="bold">contributor</span> information in the following Manifestation descriptions. A text string has been detected in a field that expects a URI: for example, a person's name has been recorded in the <span class="bold">search</span> field rather than the <span class="bold">Authorized Access Point</span> field.</p>
+            <xf:repeat ref="*">
+
+              <h3>
+                <xf:output ref="."/>
+              </h3>
+              <xf:output ref="@iri"/>
+              <button class="btn btn-primary copy-this" data-clipboard-text="{@iri}">Copy to clipboard</button>
+
+
+              <xf:output class="ephemeral" value="choose(.[@copied = 'true'], 'Copied!', '')"/>
+
+            </xf:repeat>
+            <hr />
+          </xf:group>
+          <xf:group ref="extent-check">
+            <h2>Looking for missing extent values</h2>
+            <p class="warn">Please check the <span class="bold">extent</span> information in the following Manifestation descriptions. A textual value should be supplied for the <span class="bold">extent</span> statement (MARC 300$a equivalent), and a numeric value should be supplied for the <span class="bold">total number of pages, leaves, or sheets</span>.</p>
+            <xf:repeat ref="*">
+
+              <h3>
+                <xf:output ref="."/>
+              </h3>
+              <xf:output ref="@iri"/>
+              <button class="btn btn-primary copy-this" data-clipboard-text="{@iri}">Copy to clipboard</button>
+
+
+              <xf:output class="ephemeral" value="choose(.[@copied = 'true'], 'Copied!', '')"/>
+
+            </xf:repeat>
+            <hr />
+          </xf:group>
+
+          <xf:group ref="provision-check-statements">
+            <h2>Looking for missing structured publication, etc., information</h2>
+            <p class="warn">Please check the structured <span class="bold">publication, etc.</span> information in the following Manifestation descriptions. Structured information about publication, distribution, manufacture, or production should be recorded if possible.</p>
+            <xf:repeat ref="*">
+
+              <h3>
+                <xf:output ref="."/>
+              </h3>
+              <xf:output ref="@iri"/>
+              <button class="btn btn-primary copy-this" data-clipboard-text="{@iri}">Copy to clipboard</button>
+
+
+              <xf:output class="ephemeral" value="choose(.[@copied = 'true'], 'Copied!', '')"/>
+
+            </xf:repeat>
+            <hr />
+          </xf:group>
+          <xf:group ref="provision-check-dates">
+            <h2>Looking for missing dates of publication, etc.</h2>
+            <p class="warn">Please check the structured <span class="bold">publication, etc.</span> information in the following Manifestation descriptions. An <span class="bold">associated date(s)</span> value is missing here. A date should be supplied, even if not printed on the piece. Use the EDTF date format for dates (see the <a href="http://access.rdatoolkit.org/lcpschp9_lcps9-105.html
+              
+              ">RDA Toolkit</a> for examles of EDTF-formatted dates). EDTF allows for recording approximate dates when the precise date of publication, etc., is not known.</p>
+            <xf:repeat ref="*">
+
+              <h3>
+                <xf:output ref="."/>
+              </h3>
+              <xf:output ref="@iri"/>
+              <button class="btn btn-primary copy-this" data-clipboard-text="{@iri}">Copy to clipboard</button>
+
+
+              <xf:output class="ephemeral" value="choose(.[@copied = 'true'], 'Copied!', '')"/>
+
+            </xf:repeat>
+            <hr />
+          </xf:group>
+          <xf:group ref="supplied-check">
+            <h2>Looking for missing supplied or transcribed publication, etc., information</h2>
+            <p class="warn">Please check the <span class="bold">supplied or transcribed publication, etc.</span> information in the following Manifestation descriptions. Supplied or transcribed information about publication, distribution, manufacture, or production should be recorded. <span class="bold">If no information is available, follow RDA instructions to record "[publisher not identified]," etc.</span></p>
+            <xf:repeat ref="*">
+
+              <h3>
+                <xf:output ref="."/>
+              </h3>
+              <xf:output ref="@iri"/>
+              <button class="btn btn-primary copy-this" data-clipboard-text="{@iri}">Copy to clipboard</button>
+
+
+              <xf:output class="ephemeral" value="choose(.[@copied = 'true'], 'Copied!', '')"/>
+
+            </xf:repeat>
+            <hr />
+          </xf:group>
+
+
+
+
+          <!--
+          <h2>Description sets (Work, Expression, Manifestation, Item)</h2>
+          <xf:repeat ref="*:results/*:result">
+            <hr />
+            <h2>
+              <xf:output value="*[@name = 'mainTitle']/*"/>
+            </h2>
+            <xf:group ref="*[@name = 'subtitle']">
+              <h3>
+                <xf:output value="*"/>
+              </h3>
+            </xf:group>
+            <hr />
+            <xf:group ref="*:binding[@name = 'Work']">
+              <h3>Work</h3>
+              <a href="{*:uri}">
+                <xf:output value="*:uri"/>
+              </a>
+            </xf:group>
+            <xf:group ref="*:binding[@name = 'Expression']">
+              <h3>Expression</h3>
+              <a href="{*:uri}">
+                <xf:output value="*:uri"/>
+              </a>
+            </xf:group>
+
+            <xf:group ref="*:binding[@name = 'Manifestation']">
+              <h3>Manifestation</h3>
+             
+              <a href="{*:uri}">
+                <xf:output value="*:uri"/>
+              </a>
+            </xf:group>
+
+            <xf:group ref="*:binding[@name = 'Item']">
+              <h3>Item</h3>
+              <a href="{*:uri}">
+                <xf:output value="*:uri"/>
+              </a>
+            </xf:group>
+            -->
+
+
+
+
+        </xf:group>
+      </xf:group>
+    </div>
+    <script type="text/javascript">
+          <![CDATA[
+      var clipboard = new ClipboardJS('.copy-this');
+      
+      clipboard.on('success', function (e) {
+        console.info('Action:', e.action);
+        console.info('Text:', e.text);
+        console.info('Trigger:', e.trigger);
+        
+        e.clearSelection();
+        
+        var model = document.getElementById("m");
+        var state = model.getInstanceDocument("state");
+        var current = state.getElementsByTagName('current')[0];
+        
+        // Update XForms instance using XSLTForms methods.
+        
+        XsltForms_browser.setValue(current, e.text || "");
+        
+        document.getElementById(XsltForms_browser.getMeta(current.ownerDocument.documentElement, "model")).xfElement.addChange(current);
+        
+        XsltForms_xmlevents.dispatch(model, "xforms-value-changed");
+        XsltForms_xmlevents.dispatch(model, "copy-event");
+        XsltForms_xmlevents.dispatch(model, "xforms-rebuild");
+        XsltForms_globals.refresh();
+      });
+      
+      clipboard.on('error', function (e) {
+        console.error('Action:', e.action);
+        console.error('Trigger:', e.trigger);
+      });//]]>
+        </script>
+    <script crossorigin="anonymous" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" src="https://code.jquery.com/jquery-2.2.4.min.js" type="text/javascript"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" type="text/javascript"></script>
+  </body>
+</html>

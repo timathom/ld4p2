@@ -1,0 +1,289 @@
+h1,
+h2 {
+
+
+}
+h3 {
+  color: #36C !important;
+}
+
+.small-caps {
+  font-variant: small-caps;
+}
+body {
+
+}
+.days {
+
+
+
+}
+.day {
+  margin-top: 2ex;
+  margin-bottom: 5ex;
+
+}
+.detail {
+  border-bottom: dotted black 1px;
+
+}
+.times {
+  display: inline-block;
+  width: 25ex;
+  text-indent: 5ex;
+
+}
+.hora,
+.contenido {
+
+}
+.fecha {
+  margin-left: 15px;
+
+
+}
+.bold {
+  font-weight: 800;
+}
+.program {
+
+}
+.entry {
+  display: inline-block;
+  /*width: 50ex;*/
+  /*text-indent: -2ex;*/
+  text-align: left;
+  vertical-align: top;
+  padding-bottom: 0.5ex
+}
+.title {
+  font-weight: bold
+}
+.table-programa {
+  margin-top: 5ex;
+}
+.value {
+  font-size: larger;
+}
+.subclassed,
+.subpropped {
+  display: inline-block;
+  margin-right: 4ex;
+}
+.plain {
+  font-weight: 500;
+}
+.theader {
+  background-color: #f5f5f5;
+
+}
+.theader.thlabel {
+  font-weight: bold;
+  border-left: none !important;
+}
+.tfixed {
+  width: 150px !important;
+  max-width: 150px !important;
+  border-right: none !important;
+}
+.volver {
+  text-align: right;
+}
+.note {
+  font-style: italic;
+
+}
+.intro {
+  border: dotted black 1px;
+  background-color: #f5f5f5;
+  padding: 2ex;
+}
+ul {
+  list-style-type: circle;
+
+}
+.plus {
+  list-style-image: url("/static/img/plus.png");
+
+}
+.login-form {
+
+
+
+}
+
+.login-form.xforms-group {
+
+  position: fixed;
+  width: 35%;
+  height: auto;
+
+  background-color: #FFF;
+  padding: 10px;
+  border: 5px solid #CCC;
+  z-index: 200;
+  margin: 15% auto;
+  top: 10%;
+  left: 0;
+  right: 0;
+
+
+
+
+
+}
+
+.xforms-input,
+.xforms-secret {
+  display: block;
+  margin-bottom: 2ex;
+
+}
+
+.xforms-value {
+  text-align: left;
+  width: 100%;
+}
+
+.xforms-label,
+legend {
+
+
+  font-weight: bold;
+  text-align: right;
+
+}
+
+.login-form .xforms-trigger {
+  display: inline;
+  margin: 0;
+}
+
+.login-form .registrar {
+  display: block;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+
+}
+
+.login-form .recuperar {
+  float: right;
+
+}
+
+.login-form .submit {
+  display: block;
+  padding: 0;
+  margin: 0;
+  margin-bottom: 2ex;
+
+}
+.priv {
+  float: right;
+
+}
+.xforms-label .confirmar .value .xforms-value {
+  color: red !important;
+}
+.hola {
+  float: left;
+  color: black !important;
+}
+.salir {
+  float: right;
+
+}
+.error {
+  color: red !important;
+
+}
+.volver-login {
+  float: left;
+
+}
+
+svg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%
+}
+
+.cambios {
+  margin: 2ex;
+  
+}
+.cambios-g {
+  position: fixed;
+  top:0;
+  right:0;
+  margin: 2ex;
+  
+}
+.cambios-g h3 {
+  color: red !important;
+}
+.invalid {
+  color: red !important;
+}
+
+#header {
+
+  position: relative;
+  top: 0;
+  left: 0;
+  display: block;
+  clear: both;
+  width: 100%;
+  height: 160px;
+  max-height: 160px;
+  border-bottom: solid black 1px;
+
+}
+
+#header img {
+
+  width: auto;
+  max-width: 100%;
+  max-height: 150px;
+  
+
+
+}
+.main-nav-group {
+  
+  display: table;
+  margin: 0 auto;
+  margin-top: 2ex;
+  
+}
+#prog-subform {
+  overflow: scroll;
+}
+.enlaces {
+  font-size: 16px !important;
+}
+.trans {
+  padding: 2ex;
+  border: 1px solid black !important;
+  
+}
+.trans textarea {
+  height: 100px;
+  
+}
+button {
+  background: inherit;
+  border: inherit;
+  font-size: inherit;
+  background-image: none;
+  background-color: inherit;
+  border-color: inherit;
+  color: inherit;
+  font: inherit;
+  width: inherit;
+  height: inherit;
+  padding: 6px 12px;
+}
