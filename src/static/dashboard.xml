@@ -6,9 +6,9 @@
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
     <title>LD4P cataloger dashboard</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="/basex2/static/bibframx.css" rel="stylesheet" />
+    <link href="/static/bibframx.css" rel="stylesheet" />
 
-    <script src="/basex2/static/clipboard.js-master/dist/clipboard.min.js"></script>
+    <script src="/static/clipboard.js-master/dist/clipboard.min.js"></script>
     <style type="text/css">
       <![CDATA[
       xforms-repeat-item {
@@ -59,7 +59,7 @@
           <response/>
         </data>
       </instance>
-      <submission id="send-sparql" instance="response" method="get" ref="instance('params')" replace="instance" resource="/basex2/dashboard" targetref="response">
+      <submission id="send-sparql" instance="response" method="get" ref="instance('params')" replace="instance" resource="/dashboard" targetref="response">
         <action ev:event="xforms-submit">
           <refresh/>
         </action>
